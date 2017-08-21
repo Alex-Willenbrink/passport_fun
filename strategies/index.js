@@ -4,8 +4,6 @@ const {User} = require("../models");
 module.exports = {
 
   local: new LocalStrategy(async function(username, password, done) {
-    console.log("username: ", username);
-    console.log("password: ", password)
     try {
       const user = await User.findOne({username: username});
       if (!user)
@@ -20,7 +18,6 @@ module.exports = {
 
   // Need these to persist users in sessions
   serializeUser: function(user, done) {
-    console.log(user);
     done(null, user.id)
   },
 

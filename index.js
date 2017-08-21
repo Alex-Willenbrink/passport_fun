@@ -33,7 +33,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Set up mongoose
-const {User} = require("./models");
+// const {User} = require("./models");
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/passport_practice");
 const Promise = require("bluebird");
@@ -44,50 +44,10 @@ passport.use(local);
 passport.serializeUser(serializeUser);
 passport.deserializeUser(deserializeUser);
 
-// set up router for handling other stuff
-app.get("/", (req, res) => {
-  return req.user
-    ? res.render("landing", {user: req.user})
-    : res.redirect("/login")
-})
 
-// Import the middleware
-const {loggedInOnly, loggedOutOnly} = require("./middleware");
-
-app.get("/login", loggedInOnly, (req, res) => {
-  res.render("login")
-})
-
-app.get("/register", loggedInOnly, (req, res) => {
-  res.render("register")
-});
-
-app.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/login",
-  failureFlash: true
-}))
-
-app.post("/register", async(req, res, next) => {
-  const {username, password} = req.body;
-  const user = new User({username, password});
-  console.log(user);
-
-  try {
-    await user.save();
-    // res.locals.user = user;
-    // console.log(user);
-    return res.redirect("/");
-  } catch (err) {
-    return next(err);
-  }
-});
-
-app.get('/logout', loggedOutOnly, function(req, res) {
-  req.logout();
-  res.redirect("/");
-})
-
+// Attach the index route
+const indexRoutes = require("./routes/index");
+app.use("/", indexRoutes);
 
 // Set the server to start listening for requests
 const port = 3000;

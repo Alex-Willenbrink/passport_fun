@@ -27,7 +27,6 @@ UserSchema.virtual("password")
 
 // instance method for password validation
 UserSchema.methods.validatePassword = function(password) {
-  console.log(password);
   return bcrypt.compareSync(password, this.passwordHash)
 }
 
